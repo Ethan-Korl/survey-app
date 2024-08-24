@@ -14,5 +14,5 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
-CMD [ "fastapi", "dev", "src/http_client" ]
+CMD [ "" ]
 
