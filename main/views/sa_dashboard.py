@@ -22,6 +22,10 @@ def create_survey(request : HttpRequest):
                            description=description
                            )
         survey.generate_url()
+        
+        response = HttpResponse()
+        response['HX-Redirect'] = f'/sa/sa-dashboard/'
+        return response
     return render(request, "htmx_components/create_survey_component.html")
 
 
