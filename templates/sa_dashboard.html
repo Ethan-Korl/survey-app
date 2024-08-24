@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.2"
+        integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ"
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to get the current domain
+        function getBaseUrl() {
+            return window.location.protocol + '//' + window.location.host;
+        }
+
+        function handleShareButtonClick(event) {
+            var surveyUrl = event.currentTarget.getAttribute('data-url');
+            
+            var fullUrl = getBaseUrl() + surveyUrl;
+
+            var tempInput = document.createElement('input');
+            tempInput.value = fullUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            alert('Survey link copied to clipboard!');
+        }
+
+        var shareButtons = document.querySelectorAll('.share-button');
+        shareButtons.forEach(function(button) {
+            button.addEventListener('click', handleShareButtonClick);
+        });
+    });
+</script>
+
+</head>
+
+<body class="bg-gray-100">
+
+
+    <header class="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <div class="text-2xl font-semibold">Survey Admin</div>
+        <nav>
+            <a href="#" class="mr-4 hover:underline">Home</a>
+            <a href="#" class="hover:underline">Logout</a>
+        </nav>
+    </header>
+
+    <div class="flex">
+
+        <aside class="bg-gray-200 w-64 min-h-screen p-4">
+            <ul>
+                <li><a href="" class="block py-2 px-4 text-gray-800 hover:bg-gray-300">Dashboard</a></li>
+                <li><a href="" hx-get="{% url 'create-survey' %}" hx-trigger="click" hx-target="#main-div"
+                        class="block py-2 px-4 text-gray-800 hover:bg-gray-300">Create Survey</a></li>
+                <li><a href="#" class="block py-2 px-4 text-gray-800 hover:bg-gray-300">View Responses</a></li>
+                <li><a href="#" class="block py-2 px-4 text-gray-800 hover:bg-gray-300">Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="flex-1 p-4">
+
+            <div id="main-div" class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-4">Existing Surveys</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                            <h4 class="text-lg font-semibold">Survey Title 1</h4>
+                            <p class="text-gray-600 mt-2">Short description of Survey 1.</p>
+                            <a href="{% url 'survey-result' %}" class="text-blue-500 hover:underline mt-4 block">View
+                                Responses</a>
+                            <div class="mt-4">
+                                <div class="mt-4">
+                                    <button class="share-button text-blue-500 hover:underline"
+                                        data-url="{% url 'survey-result' %}">
+                                        <i class="fas fa-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                            <h4 class="text-lg font-semibold">Survey Title 2</h4>
+                            <p class="text-gray-600 mt-2">Short description of Survey 2.</p>
+                            <a href="#" class="text-blue-500 hover:underline mt-4 block">View Responses</a>
+                            <div class="mt-4">
+                                <div class="mt-4">
+                                    <button class="share-button text-blue-500 hover:underline"
+                                        data-url="{% url 'survey-result' %}">
+                                        <i class="fas fa-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                            <h4 class="text-lg font-semibold">Survey Title 3</h4>
+                            <p class="text-gray-600 mt-2">Short description of Survey 3.</p>
+                            <a href="#" class="text-blue-500 hover:underline mt-4 block">View Responses</a>
+                            <div class="mt-4">
+                                <div class="mt-4">
+                                    <button class="share-button text-blue-500 hover:underline"
+                                        data-url="{% url 'survey-result' %}">
+                                        <i class="fas fa-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

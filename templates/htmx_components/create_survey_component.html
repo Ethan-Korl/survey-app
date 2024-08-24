@@ -5,13 +5,13 @@
         {% csrf_token %}
         <div class="mb-4">
             <label for="surveyTitle" class="block text-gray-700">Survey Title</label>
-            <input type="text" id="surveyTitle"
+            <input type="text" id="surveyTitle" name="title"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 placeholder="Enter survey title">
         </div>
         <div class="mb-4">
             <label for="surveyDescription" class="block text-gray-700">Description</label>
-            <textarea id="surveyDescription" rows="4"
+            <textarea id="surveyDescription" rows="4" name="description"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 placeholder="Enter survey description"></textarea>
         </div>
