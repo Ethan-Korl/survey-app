@@ -82,6 +82,8 @@ DATABASES = {
     }
 }
 
+SA_MODEL_USER = "accounts.SurveyAdmin"
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -101,6 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+JWT_ALGORITHM='HS256'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

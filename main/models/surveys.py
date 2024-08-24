@@ -13,7 +13,7 @@ class Survey(models.Model):
     
     
     def generate_url(self):
-        url = reverse('sp-dashboard', args=str(self.url_id))
+        url = reverse('sp-dashboard', kwargs={'url_id':self.url_id})
         print(url)
         self.survey_link = url
         self.save()
