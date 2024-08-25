@@ -16,8 +16,8 @@ class SurveyRepository:
 
 
     @classmethod
-    def get_all(cls) -> list[Survey]:
-        return cls.survey_model.objects.all()
+    def get_all_by_user(cls, admin_id) -> list[Survey]:
+        return cls.survey_model.objects.filter(admin=admin_id)
 
 
     @classmethod
