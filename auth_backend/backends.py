@@ -37,12 +37,15 @@ class BaseSurveyAdminManager(BaseUserManager):
         return survey_admin
     
        
-class JWTBackend(BaseBackend):
+class SimpleJWTBackend(BaseBackend):
     
     @staticmethod
     def authenticate(username=None, password=None, **kwargs):
         try:
-            survey_admin = sa_repo.get_by_username(username=username)    
+            survey_admin = sa_repo.get_by_username(username=username)
+            if survey_admin is None:
+                raise SurveyAdmin.DoesNotExist
+                
             if check_password(password, survey_admin.password):
                 return survey_admin
             

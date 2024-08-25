@@ -16,110 +16,223 @@
     </style>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to get the current domain
-        function getBaseUrl() {
-            return window.location.protocol + '//' + window.location.host;
-        }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to get the current domain
+            const surveyLoader = document.getElementById("survey-loader")
+            const messageDiv = document.getElementById("message-div")
 
-        function handleShareButtonClick(event) {
-            var surveyUrl = event.currentTarget.getAttribute('data-url');
+            messageDiv.style.display = "none"
+            surveyLoader.style.display = "inline"
+
+
+            function getBaseUrl() {
+                return window.location.protocol + '//' + window.location.host;
+            }
+
+            function handleLogout() {
+                localStorage.removeItem("access_token");
+                console.log(window.location.host)
+                window.location.href = "/"
+            }
+
+            function submitSurveyForm() {
+                let form = document.getElementById("survey-form")
+                access_token = localStorage.getItem("access_token")
+                let formData = new FormData(form)
+
+                fetch("api/create-survey/", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                    }
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+
+            }
+
+            function fetchSurveys() {
+                console.log("workin")
+                access_token = localStorage.getItem("access_token")
+                fetch('/api/surveys', {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                    }
+                })
+                    .then(response => {
+                        if (response.status == 404) {
+                            return response.json().then(data => {
+                                throw new Error(`No surveys found`);
+                            });
+
+                        }
+                        return response.json()
+                    })
+                    .then(data => {
+                        surveyLoader.style.display = "none"
+                        var surveysContainer = document.getElementById('surveys-container');
+                        surveysContainer.innerHTML = '';
+
+                        data.surveys.forEach(survey => {
+                            var surveyDiv = document.createElement('div');
+                            surveyDiv.className = 'bg-gray-100 p-4 rounded-lg shadow-md';
+                            surveyDiv.innerHTML = `
+                                <h4 class="text-lg font-semibold">${survey.title}</h4>
+                                <p class="mt-2 text-gray-600">${survey.description}</p>
+                                <a href="${survey.resultUrl}" class="block mt-4 text-blue-500 hover:underline">View Responses</a>
+                                <div class="mt-4">
+                                    <button class="text-blue-500 share-button hover:underline" data-url="${survey.resultUrl}">
+                                        <i class="fas fa-share"></i> Share
+                                    </button>
+                                </div>
+                            `;
+                            surveysContainer.appendChild(surveyDiv);
+                        });
+
+                        var shareButtons = document.querySelectorAll('.share-button');
+                        shareButtons.forEach(function (button) {
+                            button.addEventListener('click', handleShareButtonClick);
+                        });
+                    })
+                    .catch(error => {
+                        messageDiv.style.display = "inline"
+                        document.getElementById("message-box").innerText = "error fetching surveys"
+                    });
+            }
+
+
+
+            function handleShareButtonClick(event) {
+                var surveyUrl = event.currentTarget.getAttribute('data-url');
+
+                var fullUrl = getBaseUrl() + surveyUrl;
+
+                var tempInput = document.createElement('input');
+                tempInput.value = fullUrl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+
+                alert('Survey link copied to clipboard!');
+            }
+
+
             
-            var fullUrl = getBaseUrl() + surveyUrl;
-
-            var tempInput = document.createElement('input');
-            tempInput.value = fullUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            alert('Survey link copied to clipboard!');
-        }
-
-        var shareButtons = document.querySelectorAll('.share-button');
-        shareButtons.forEach(function(button) {
-            button.addEventListener('click', handleShareButtonClick);
+            // var shareButtons = document.querySelectorAll('.share-button');
+            // shareButtons.forEach(function (button) {
+            //     button.addEventListener('click', handleShareButtonClick);
+            // });
+            try {
+                // fetchSurveys()
+            } catch (error) {
+                null
+            }
         });
-    });
-</script>
+    </script>
 
 </head>
 
 <body class="bg-gray-100">
 
 
-    <header class="bg-gray-800 text-white p-4 flex justify-between items-center">
+    <header class="flex items-center justify-between p-4 text-white bg-gray-800">
         <div class="text-2xl font-semibold">Survey Admin</div>
         <nav>
             <a href="#" class="mr-4 hover:underline">Home</a>
-            <a href="#" class="hover:underline">Logout</a>
+            <button onclick="handleLogout" class="hover:underline">Logout</button>
         </nav>
     </header>
 
     <div class="flex">
 
-        <aside class="bg-gray-200 w-64 min-h-screen p-4">
+        <aside class="w-64 min-h-screen p-4 bg-gray-200">
             <ul>
-                <li><a href="" class="block py-2 px-4 text-gray-800 hover:bg-gray-300">Dashboard</a></li>
+                <li><a href="" class="block px-4 py-2 text-gray-800 hover:bg-gray-300">Dashboard</a></li>
                 <li><a href="" hx-get="{% url 'create-survey' %}" hx-trigger="click" hx-target="#main-div"
-                        class="block py-2 px-4 text-gray-800 hover:bg-gray-300">Create Survey</a></li>
-                <li><a href="#" class="block py-2 px-4 text-gray-800 hover:bg-gray-300">View Responses</a></li>
-                <li><a href="#" class="block py-2 px-4 text-gray-800 hover:bg-gray-300">Settings</a></li>
+                        class="block px-4 py-2 text-gray-800 hover:bg-gray-300">Create Survey</a></li>
+                <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-300">View Responses</a></li>
+                <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-300">Settings</a></li>
             </ul>
         </aside>
 
         <main class="flex-1 p-4">
 
-            <div id="main-div" class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <div id="main-div" class="p-6 mb-6 bg-white rounded-lg shadow-md">
                 <div class="mt-6">
-                    <h3 class="text-lg font-semibold mb-4">Existing Surveys</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <h3 class="mb-4 text-lg font-semibold">Existing Surveys</h3>
+                    <div id="surveys-container" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
 
-                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <div id="survey-loader" class="flex items-center justify-content">
+                            <svg aria-hidden="true" id="loader"
+                                class="inline w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill" />
+                            </svg>
+                            <h5>Loading surveys</h5>
+                        </div>
+
+                        <div id="message-div"
+                            class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded"
+                            role="alert">
+                            <strong class="font-bold">Error</strong>
+                            <span class="block sm:inline" id="message-box">.</span>
+                        </div>
+
+
+                        <!-- 
+                        <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                             <h4 class="text-lg font-semibold">Survey Title 1</h4>
-                            <p class="text-gray-600 mt-2">Short description of Survey 1.</p>
-                            <a href="{% url 'survey-result' %}" class="text-blue-500 hover:underline mt-4 block">View
+                            <p class="mt-2 text-gray-600">Short description of Survey 1.</p>
+                            <a href="{% url 'survey-result' %}" class="block mt-4 text-blue-500 hover:underline">View
                                 Responses</a>
                             <div class="mt-4">
                                 <div class="mt-4">
-                                    <button class="share-button text-blue-500 hover:underline"
+                                    <button class="text-blue-500 share-button hover:underline"
                                         data-url="{% url 'survey-result' %}">
                                         <i class="fas fa-share"></i> Share
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
-                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <!-- <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                             <h4 class="text-lg font-semibold">Survey Title 2</h4>
-                            <p class="text-gray-600 mt-2">Short description of Survey 2.</p>
-                            <a href="#" class="text-blue-500 hover:underline mt-4 block">View Responses</a>
+                            <p class="mt-2 text-gray-600">Short description of Survey 2.</p>
+                            <a href="#" class="block mt-4 text-blue-500 hover:underline">View Responses</a>
                             <div class="mt-4">
                                 <div class="mt-4">
-                                    <button class="share-button text-blue-500 hover:underline"
+                                    <button class="text-blue-500 share-button hover:underline"
                                         data-url="{% url 'survey-result' %}">
                                         <i class="fas fa-share"></i> Share
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
-
-                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                        <!-- 
+                        <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                             <h4 class="text-lg font-semibold">Survey Title 3</h4>
-                            <p class="text-gray-600 mt-2">Short description of Survey 3.</p>
-                            <a href="#" class="text-blue-500 hover:underline mt-4 block">View Responses</a>
+                            <p class="mt-2 text-gray-600">Short description of Survey 3.</p>
+                            <a href="#" class="block mt-4 text-blue-500 hover:underline">View Responses</a>
                             <div class="mt-4">
                                 <div class="mt-4">
-                                    <button class="share-button text-blue-500 hover:underline"
+                                    <button class="text-blue-500 share-button hover:underline"
                                         data-url="{% url 'survey-result' %}">
                                         <i class="fas fa-share"></i> Share
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
 
