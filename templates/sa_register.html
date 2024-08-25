@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/htmx.org@2.0.2"
         integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ"
         crossorigin="anonymous"></script>
+
     <style>
         .signup-container {
             display: flex;
@@ -17,6 +18,66 @@
             height: 100vh;
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageDiv = document.getElementById('message-div')
+            messageDiv.style.display = "none"
+
+            const loader = document.getElementById('loader')
+            loader.style.display = "none"
+
+            const formDiv = document.getElementById('sa-signup-form')
+
+            function submitSignupForm(params) {
+                form = document.getElementById('sa-signup-form')
+                const formData = new FormData(form);
+
+                fetch('/signup/', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) { 
+                            if (response.status === 409) {
+                                return response.json().then(data => {
+                                    throw new Error(`${data.detail}`);
+                                });
+                            } else if (response.status === 401) {
+                                return response.json().then(data => {
+                                    throw new Error(`${data.detail}`);
+                                });
+                            } else {
+                                return response.json().then(data => {
+                                    throw new Error(`HTTP error ${response.status}`);
+                                });
+                            }
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        localStorage.setItem("access_token", data.access)
+                        window.location.href =  `http://127.0.0.1:8000${data.dashboard_url}`
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        messageDiv.style.display = "inline"
+                        document.getElementById("message-box").innerText = error.message
+                        console.error('Error:', error);
+                    });
+            }
+
+            formDiv.addEventListener('submit', (e) => {
+                loader.style.display = "inline"
+                submitSignupForm()
+                e.preventDefault()
+            })
+
+
+        })
+
+    </script>
+
 </head>
 
 <body class="bg-gray-100">
@@ -24,7 +85,7 @@
     <div class="signup-container">
         <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
             <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Create Your Account</h2>
-            <form hx-post="{% url 'accounts:signup' %}" hx-target="#msg-box" method="post">
+            <form method="post" id="sa-signup-form">
                 {% csrf_token %}
                 <div class="mb-4">
                     <input type="text" id="username" name="username" required
@@ -41,16 +102,19 @@
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         placeholder="Confirm Password">
                 </div>
-                <div id="msg-box">
 
+                <div id="message-div" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert">
+                    <strong class="font-bold">Error</strong>
+                    <span class="block sm:inline" id="message-box">{{message}}.</span>
                 </div>
+
                 <div class="h-5"></div>
                 <div class="flex items-center justify-between">
                     <button type="submit"
                         class="flex justify-center w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Sign Up
-                        <svg aria-hidden="true"
-                            id="loader"
+                        <svg aria-hidden="true" id="loader"
                             class="inline w-6 h-6  ml-1 htmx-indicator text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                             viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
