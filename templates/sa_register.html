@@ -29,6 +29,10 @@
 
             const formDiv = document.getElementById('sa-signup-form')
 
+            function getBaseUrl() {
+                return window.location.protocol + '//' + window.location.host;
+            }
+
             function submitSignupForm(params) {
                 form = document.getElementById('sa-signup-form')
                 const formData = new FormData(form);
@@ -38,7 +42,7 @@
                     body: formData
                 })
                     .then(response => {
-                        if (!response.ok) { 
+                        if (!response.ok) {
                             if (response.status === 409) {
                                 return response.json().then(data => {
                                     throw new Error(`${data.detail}`);
@@ -57,8 +61,7 @@
                     })
                     .then(data => {
                         localStorage.setItem("access_token", data.access)
-                        window.location.href =  `http://127.0.0.1:8000${data.dashboard_url}`
-                        console.log('Success:', data);
+                        window.location.href = getBaseUrl() + `${data.dashboard_url}`
                     })
                     .catch(error => {
                         messageDiv.style.display = "inline"
@@ -83,39 +86,41 @@
 <body class="bg-gray-100">
 
     <div class="signup-container">
-        <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Create Your Account</h2>
+        <div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-lg">
+            <h2 class="mb-6 text-2xl font-bold text-center text-gray-800">Create Your Account</h2>
             <form method="post" id="sa-signup-form">
                 {% csrf_token %}
                 <div class="mb-4">
                     <input type="text" id="username" name="username" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        class="block w-full px-3 py-2 mt-1 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         placeholder="Username">
                 </div>
                 <div class="mb-4">
                     <input type="password" id="password" name="password" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        class="block w-full px-3 py-2 mt-1 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         placeholder="Password">
                 </div>
                 <div class="mb-6">
                     <input type="password" id="confirm-password" name="confirm_password" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        class="block w-full px-3 py-2 mt-1 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         placeholder="Confirm Password">
                 </div>
 
-                <div id="message-div" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                    role="alert">
-                    <strong class="font-bold">Error</strong>
-                    <span class="block sm:inline" id="message-box">{{message}}.</span>
+                <div class="flex items-center justify-center">
+                    <div id="message-div"
+                        class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+                        <strong class="font-bold">Error</strong>
+                        <span class="block sm:inline" id="message-box">{{message}}.</span>
+                    </div>
                 </div>
 
                 <div class="h-5"></div>
                 <div class="flex items-center justify-between">
                     <button type="submit"
-                        class="flex justify-center w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="flex justify-center w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Sign Up
                         <svg aria-hidden="true" id="loader"
-                            class="inline w-6 h-6  ml-1 htmx-indicator text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                            class="inline w-6 h-6 ml-1 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                             viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -126,7 +131,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="mt-4 text-center text-sm text-gray-600">
+                <div class="mt-4 text-sm text-center text-gray-600">
                     <p>Already have an account? <a href="/" class="text-blue-600 hover:text-blue-700">Login
                             here</a></p>
                 </div>
