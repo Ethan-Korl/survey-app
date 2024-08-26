@@ -84,6 +84,7 @@ DATABASES = {
 
 SA_MODEL_USER = "accounts.SurveyAdmin"
 
+AUTH_USER_MODEL= "accounts.SurveyAdmin"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -103,7 +104,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-JWT_ALGORITHM='HS256'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+AUTHENTICATION_BACKENDS = [
+    "auth_backend.backends.SimpleJWTBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
