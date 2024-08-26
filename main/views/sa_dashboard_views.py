@@ -22,10 +22,6 @@ def sa_dashboard(request: HttpRequest) -> HttpRequest:
     )
 
 
-def create_survey(request: HttpRequest):
-    return render(request, "htmx_components/create_survey_component.html")
-
-
 def survey_detail(request, survey_id):
     return render(request, "survey_detail.html")
 
