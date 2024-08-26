@@ -26,20 +26,17 @@ def create_survey(request: HttpRequest):
     return render(request, "htmx_components/create_survey_component.html")
 
 
+def survey_detail(request, survey_id):
+    return render(request, "survey_detail.html")
+
+
 def create_question(request, survey_id):
-    print(survey_id)
     return render(request, "sa_questions.html")
 
 
-def survey_result(request, survey_id):
-    if request.method == "POST":
-        # JWTBackend()
-        pass
-    return render(request, "survey_result.html")
+def survey_questions(request, survey_id):
+    return render(request, "survey_questions.html")
 
 
-def survey_detail(request, survey_id):
-    if request.method == "POST":
-        # JWTBackend()
-        pass
-    return render(request, "survey_detail.html")
+def question_results(request, question_id):
+    return render(request, "sa_question_responses.html")

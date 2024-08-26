@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from main.models import Question
 
 
@@ -13,11 +13,18 @@ class QuestionSerializer(ModelSerializer):
 
 
 class QuestionListSerializer(ModelSerializer):
+    # created_at = SerializerMethodField()
+
     class Meta:
         model = Question
         fields = (
             "survey",
             "question",
+            "pk",
             "answer_required",
+            "created_at",
             "type_of_response_required",
         )
+
+    # def get_created_at(self, obj: Question):
+    #     return obj.created_at.date

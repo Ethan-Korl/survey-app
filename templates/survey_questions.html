@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Details and Responses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+
+    <header class="flex items-center justify-between p-4 text-white bg-gray-800">
+        <div class="text-2xl font-semibold">Survey Admin</div>
+    </header>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const editLink = document.getElementById("edit-link")
+            const url = window.location.href.split("/")
+            const survey_id = url[url.length - 2]
+            console.log(survey_id)
+
+
+            editLink.href = `/sa/survey-detail/${survey_id}/`
+
+            function fetchQuestions() {
+                const access_token = localStorage.getItem("access_token");
+                fetch(`/sa/api/get-questions/${survey_id}/`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                    }
+                })
+                    .then(response => {
+                        if (response.status === 404) {
+                            throw new Error(`No questions found for survey ${survey_id}`);
+                        }
+                        if (response.status !== 200) {
+                            throw new Error(`Error fetching questions`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data)
+                        const questionsContainer = document.getElementById('questions-tbody');
+                        questionsContainer.innerHTML = '';
+
+                        data.questions.reverse().forEach(question => {
+                            const questionDiv = document.createElement('tr');
+                            questionDiv.innerHTML = `
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">${question.question}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">${question.created_at}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"><a class="text-blue-500 hover:underline" href="/sa/question-responses/${question.pk}/">View Reponses</a></td>
+                            `;
+                            questionsContainer.appendChild(questionDiv);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+            fetchQuestions()
+        })
+    </script>
+
+    <div class="flex justify-center p-6">
+        <main class="w-full max-w-4xl p-6 bg-white rounded-lg shadow-md">
+            <div>
+
+
+                <div class="mb-6">
+                    <h2 class="mb-4 text-2xl font-semibold">Survey Questions</h2>
+                    <a href="" id="edit-link" class="text-blue-500 hover:underline">Edit
+                        Survey Details</a>
+                </div>
+
+
+                <div>
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    Question</th>
+
+                                <th
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    Date Added</th>
+
+                                <th
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    Responses
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="questions-tbody" class="bg-white divide-y divide-gray-200">
+
+
+                            <tr>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">Jane Smith
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">The product exceeded my
+                                    expectations.</td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">2024-08-22</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
