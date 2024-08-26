@@ -6,6 +6,7 @@ from main.serializers import (
     CreateSurveySerializer,
     ListSurveySerializer,
     QuestionSerializer,
+    QuestionListSerializer,
 )
 from utils import check_if_required
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
@@ -72,6 +73,18 @@ class CreateQuestionView(CreateAPIView):
             return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)
+
+
+class ListQuestionView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = QuestionListSerializer
+
+    def get(self, request, survey_id):
+        surveys = ques_repo.get_by_survey(survey=survey_id)
+        serializer = self.serializer_class(surveys, many=True)
+        data = {}
+        data["questions"] = serializer.data
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 class CreateSurveyView(CreateAPIView):

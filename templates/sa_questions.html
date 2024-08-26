@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Questions Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.2"
+        integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ"
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const url = window.location.href.split("/")
+            const survey_id = url[url.length - 2]
+            console.log(survey_id)
+
+            function fetchQuestions() {
+                const access_token = localStorage.getItem("access_token");
+                fetch(`/sa/api/get-questions/${survey_id}/`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                    }
+                })
+                    .then(response => {
+                        if (response.status === 404) {
+                            throw new Error(`No questions found for survey ${survey_id}`);
+                        }
+                        if (response.status !== 200) {
+                            throw new Error(`Error fetching questions`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data)
+                        const questionsContainer = document.getElementById('questions-container');
+                        questionsContainer.innerHTML = '';
+
+                        data.questions.reverse().forEach(question => {
+                            const questionDiv = document.createElement('div');
+                            questionDiv.className = 'bg-gray-200 p-4 rounded-lg shadow-lg';
+                            questionDiv.innerHTML = `
+                                <h4 class="text-lg font-semibold">${question.question}</h4>
+                                <p class="mt-2 text-gray-600">Type: ${question.type_of_response_required}</p>
+                                <p class="mt-2 text-gray-600">Required: ${question.answer_required ? 'Yes' : 'No'}</p>
+                            `;
+                            questionsContainer.appendChild(questionDiv);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            // Function to handle adding a question
+            function handleAddQuestion(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target)
+                formData.append("survey", survey_id)
+
+                const access_token = localStorage.getItem("access_token");
+
+                fetch(`/sa/api/create-question/`, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                    },
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.detail);
+                        fetchQuestions();
+                    })
+                    .catch(error => {
+                        alert('Error adding question: ' + error.message);
+                    });
+            }
+
+            document.getElementById('add-question-form').addEventListener('submit', handleAddQuestion);
+
+
+            fetchQuestions();
+        });
+    </script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="flex items-center justify-between p-4 text-white bg-gray-800">
+        <div class="text-2xl font-semibold">Survey Admin</div>
+        <nav>
+            <button onclick="handleLogout()" class="hover:underline">Logout</button>
+        </nav>
+    </header>
+
+    <main class="flex-1 p-4">
+        <div id="main-div" class="p-6 mb-6 bg-white rounded-lg shadow-md">
+            <h2 class="mb-4 text-xl font-semibold">Manage Questions for Survey</h2>
+
+            <div id="questions-section">
+                <h3 class="mb-2 text-lg font-semibold">Add a New Question</h3>
+                <form id="add-question-form" class="mb-4">
+
+                    <div class="mb-4">
+                        <label for="question-text" class="block text-gray-700">Question Text</label>
+                        <input type="text" name="question" id="question-text"
+                            class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
+                            placeholder="Enter the question text">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="question-type" class="block text-gray-700">Answer Type</label>
+                        <select name="type_of_response_required" id="question-type"
+                            class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm">
+                            <option value="Text">Text</option>
+                            <option value="Selection">Multiple Response</option>
+                            <option value="Image">Image Response</option>
+                            <option value="File">File Response</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="is-required" class="flex items-center">
+                            <input name="answer_required" type="checkbox" id="is-required"
+                                class="w-5 h-5 text-blue-600 border-gray-300 rounded form-checkbox">
+                            <span class="ml-2 text-gray-700">Required</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">Add
+                        Question
+                    </button>
+                </form>
+                <div id="questions-container" class="space-y-4">
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

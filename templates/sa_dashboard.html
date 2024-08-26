@@ -94,14 +94,14 @@
 
                         data.surveys.forEach(survey => {
                             var surveyDiv = document.createElement('div');
-                            surveyDiv.className = 'bg-gray-100 p-4 rounded-lg shadow-md';
+                            surveyDiv.className = 'bg-gray-200 p-4 rounded-lg shadow-md';
                             surveyDiv.innerHTML = `
                                 <h4 class="text-lg font-semibold">${survey.title}</h4>
                                 <p class="mt-2 text-gray-600">${survey.description}</p>
-                                <a href="{% url 'survey-result' %}" hx-trigger="click" class="block mt-4 text-blue-500 hover:underline">View Responses</a>
+                                <a href="/sa/survey-result/${survey.pk}/" hx-trigger="click" class="block mt-4 text-blue-500 hover:underline">View Responses</a>
                                  <a href="/sa/create-question/${survey.pk}/" class="block mt-4 text-blue-500 hover:underline">Questions</a>
                                 <div class="flex justify-between mt-4">
-                                    <button class="text-blue-500 share-button hover:underline" data-url="${survey.resultUrl}">
+                                    <button class="text-blue-500 share-button hover:underline" data-url="${survey.url_id}">
                                         <i class="fas fa-share"></i> Share
                                     </button>
 
@@ -148,7 +148,7 @@
             function handleShareButtonClick(event) {
                 var surveyUrl = event.currentTarget.getAttribute('data-url');
 
-                var fullUrl = getBaseUrl() + surveyUrl;
+                var fullUrl = `${getBaseUrl()}/sp/sp-response/${surveyUrl}/`;
 
                 var tempInput = document.createElement('input');
                 tempInput.value = fullUrl;
@@ -281,15 +281,8 @@
                                     class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
                                     placeholder="Enter survey description"></textarea>
                             </div>
-                            <div class="mb-4">
-                                <label for="surveyLink" class="block text-gray-700">Share Link</label>
-                                <input type="text" id="surveyLink"
-                                    class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
-                                    placeholder="Survey link will be generated here" readonly>
-                            </div>
-                            <button type="submit"
-                                class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">Generate Survey
-                                Link
+                            <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">Add
+                                Survey
                                 <svg aria-hidden="true" id="loader"
                                     class="inline w-6 h-6 ml-1 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                                     viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

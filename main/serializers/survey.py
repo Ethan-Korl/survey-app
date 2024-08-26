@@ -5,7 +5,7 @@ from main.models import Survey
 class ListSurveySerializer(ModelSerializer):
     class Meta:
         model = Survey
-        fields = ("pk", "title", "description", "survey_link")
+        fields = ("pk", "url_id", "title", "description", "survey_link")
 
 
 class CreateSurveySerializer(Serializer):

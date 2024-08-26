@@ -10,3 +10,14 @@ class QuestionSerializer(ModelSerializer):
             "question",
             "type_of_response_required",
         )
+
+
+class QuestionListSerializer(ModelSerializer):
+    class Meta:
+        model = Question
+        fields = (
+            "survey",
+            "question",
+            "answer_required",
+            "type_of_response_required",
+        )
