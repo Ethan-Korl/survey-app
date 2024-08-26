@@ -16,10 +16,10 @@ survey_repo =  SurveyRepository
 
 class ListSurveyView(ListAPIView):
     serializer_class = ""
-    authentication_classes = []
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, *args, **kwargs):
-        surveys = survey_repo.get_all_by_user(request.user.id)
+        surveys = survey_repo.get_all_by_user(request.user)
         serializer = self.serializer_class(surveys, many=True)
         
         return Response(data=serializer.data, status=status.HTTP_200_OK)
