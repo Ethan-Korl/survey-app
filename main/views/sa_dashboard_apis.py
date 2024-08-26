@@ -2,7 +2,7 @@ from django.shortcuts import render
 from main.models import Survey, Question
 from typing import Any
 from main.repository import SurveyRepository
-from main.serializers import CreateSurveySerializer
+from main.serializers import CreateSurveySerializer, ListSurveySerializer
 from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -15,14 +15,15 @@ survey_repo =  SurveyRepository
 
 
 class ListSurveyView(ListAPIView):
-    serializer_class = ""
+    serializer_class = ListSurveySerializer
     permission_classes = [IsAuthenticated]
     
     def get(self, request, *args, **kwargs):
         surveys = survey_repo.get_all_by_user(request.user)
         serializer = self.serializer_class(surveys, many=True)
-        
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        data = {}
+        data["surveys"] = serializer.data
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 

@@ -2,6 +2,7 @@ from  main.views import (sa_dashboard,
                          create_survey, 
                          survey_detail, 
                          CreateSurveyView,
+                         ListSurveyView,
                          survey_result,
                          sp_dashboard,
                          )
@@ -16,4 +17,5 @@ urlpatterns = [
     
     
     path('api/create-survey/', CreateSurveyView.as_view(), name="create-survey-api"),
+    path('api/get-surveys/',ListSurveyView.as_view(), name="list-survey-api"),
 ]
