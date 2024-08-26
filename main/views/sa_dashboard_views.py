@@ -8,17 +8,27 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
+
 # Create your views here.
 
 
-survey_repo =  SurveyRepository
+survey_repo = SurveyRepository
+
 
 def sa_dashboard(request: HttpRequest) -> HttpRequest:
-    return render(request, "sa_dashboard.html",)
+    return render(
+        request,
+        "sa_dashboard.html",
+    )
 
-    
-def create_survey(request : HttpRequest):
+
+def create_survey(request: HttpRequest):
     return render(request, "htmx_components/create_survey_component.html")
+
+
+def create_question(request, survey_id):
+    print(survey_id)
+    return render(request, "sa_questions.html")
 
 
 def survey_result(request):
@@ -26,6 +36,7 @@ def survey_result(request):
         # JWTBackend()
         pass
     return render(request, "survey_result.html")
+
 
 def survey_detail(request):
     if request.method == "POST":

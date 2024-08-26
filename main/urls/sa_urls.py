@@ -6,6 +6,7 @@ from main.views import (
     ListSurveyView,
     DeleteSurveyView,
     survey_result,
+    create_question,
 )
 from django.urls import path
 
@@ -15,6 +16,7 @@ sa_urlpatterns = [
     path("create-survey/", create_survey, name="create-survey"),
     path("survey-result/", survey_result, name="survey-result"),
     path("survey-detail/", survey_detail, name="survey-detail"),
+    path("create-question/<survey_id>/", create_question, name="create-question"),
     path("api/create-survey/", CreateSurveyView.as_view(), name="create-survey-api"),
     path("api/get-surveys/", ListSurveyView.as_view(), name="list-survey-api"),
     path(
