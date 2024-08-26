@@ -17,6 +17,13 @@ class SurveyRepository:
             return None
 
     @classmethod
+    def get_by_url_id(cls, url_id: int) -> Optional[Survey]:
+        try:
+            return cls.survey_model.objects.get(url_id=url_id)
+        except cls.survey_model.DoesNotExist:
+            return None
+
+    @classmethod
     def get_by_title(cls, title: str) -> Optional[Survey]:
         try:
             return cls.survey_model.objects.get(title=title)
