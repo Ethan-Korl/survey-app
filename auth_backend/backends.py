@@ -18,12 +18,13 @@ from django.contrib.auth.hashers import make_password, check_password
 sa_repo = SurveyAdminRepository
 
 # class BaseSurveyAdminManager:
-    
+
 #     @staticmethod
 #     def create_survey_admin(username, password):
-    
+
 
 sa_repo = SurveyAdminRepository
+
 
 class BaseSurveyAdminManager(BaseUserManager):
     @staticmethod
@@ -31,27 +32,26 @@ class BaseSurveyAdminManager(BaseUserManager):
         _harshed_password = make_password(password)
         print(_harshed_password)
         survey_admin = sa_repo.create(
-                                username=username, 
-                                password=_harshed_password,
-                            )
+            username=username,
+            password=_harshed_password,
+        )
         return survey_admin
-    
-       
+
+
 class SimpleJWTBackend(BaseBackend):
-    
     @staticmethod
     def authenticate(username=None, password=None, **kwargs):
         try:
             survey_admin = sa_repo.get_by_username(username=username)
             if survey_admin is None:
                 raise SurveyAdmin.DoesNotExist
-                
+
             if check_password(password, survey_admin.password):
                 return survey_admin
-            
+
             return None
         except SurveyAdmin.DoesNotExist:
-            return None 
+            return None
 
     def get_user(self, admin_id):
         try:
@@ -61,15 +61,11 @@ class SimpleJWTBackend(BaseBackend):
 
 
 class CustomTokenSerializer(TokenObtainPairSerializer):
-    
-    def login_admin(self, request : HttpRequest, survey_admin):
+
+    def login_admin(self, request: HttpRequest, survey_admin):
         refresh = self.get_token(survey_admin)
         tokens = {}
         tokens["refresh"] = str(refresh)
         tokens["access"] = str(refresh.access_token)
-        
-        return tokens
 
-    
-    
-    
+        return tokens

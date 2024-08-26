@@ -8,14 +8,21 @@ class Options(models.Model):
     option = models.CharField(max_length=50)
 
 
-class ImageReponse(models.Model):
+class TextResponse(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="text_responses"
+    )
+    response = models.TextField()
+
+
+class ImageResponse(models.Model):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name="image_responses"
     )
     response = models.ImageField(upload_to="ImageResponses")
 
 
-class FileReponse(models.Model):
+class FileResponse(models.Model):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name="file_responses"
     )
