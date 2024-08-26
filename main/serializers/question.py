@@ -5,4 +5,8 @@ from main.models import Question
 class QuestionSerializer(ModelSerializer):
     class Meta:
         model = Question
-        fields = ("question", "type_of_reponse_required", "answer_Required")
+        fields = (
+            "survey",
+            "question",
+            "type_of_response_required",
+        )

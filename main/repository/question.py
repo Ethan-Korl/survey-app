@@ -27,14 +27,14 @@ class QuestionRepository:
         survey: Survey,
         question: str,
         type_of_response_required: str,
-        make_available: bool = False,
+        answer_required: bool = False,
     ) -> Question:
 
         question = cls.question_model.objects.create(
             question=question,
             survey=survey,
             type_of_response_required=type_of_response_required,
-            make_available=make_available,
+            answer_required=answer_required,
         )
         question.save()
         return question
