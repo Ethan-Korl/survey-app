@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Participation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <header class="flex items-center justify-between p-4 text-white bg-gray-800">
+        <div class="text-2xl font-semibold">Survey Participation</div>
+    </header>
+
+    <main class="flex-1 p-4">
+        <div class="p-6 mb-6 bg-white rounded-lg shadow-md">
+            <div id="survey-container">
+
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const surveyData = {
+            title: "",
+            questions: []
+        };
+
+        function fetchQuestions() {
+            const access_token = localStorage.getItem("access_token");
+            const url = window.location.href.split("/")
+            const url_id = url[url.length - 2]
+
+            fetch(`/sp/api/get-questions/${url_id}/`, {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${access_token}`,
+                }
+            })
+                .then(response => {
+                    if (response.status === 404) {
+                        throw new Error(`No questions found for survey ${survey_id}`);
+                    }
+                    if (response.status !== 200) {
+                        throw new Error(`Error fetching questions`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    surveyData["title"] = data.survey
+                    surveyData["questions"] = data.questions
+                    console.log(data)
+                    renderQuestions();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+
+
+        function renderQuestions() {
+            const container = document.getElementById('survey-container');
+            container.innerHTML = `<h2 class="text-xl font-semibold">${surveyData.title}</h2><br />`;
+
+            surveyData.questions.forEach(question => {
+                let inputField;
+
+                switch (question.type_of_response_required) {
+                    case 'Text':
+                        inputField = `<input type="text" id="question-${question.id}" 
+                        name="question-${question.id}" 
+                        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
+                        placeholder="${question.question}"
+                        ${question.answer_required ? "required" : null}>`;
+                        break;
+
+                    case 'Number':
+                        inputField = `<input type="number" id="question-${question.id}" 
+                        name="question-${question.id}" 
+                        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm" 
+                        placeholder="${question.question}"  
+                        ${question.answer_required ? "required" : null}>`;
+                        break;
+
+                    case 'File':
+                        inputField = `<input type="file" id="question-${question.id}" 
+                        name="question-${question.id}" 
+                        class="block mt-1" ${question.answer_required ? "required" : null}>`;
+                        break;
+
+                    case 'Image':
+                        inputField = `<input type="file" id="question-${question.id}" 
+                        name="question-${question.id}" 
+                        accept="image/*" class="block mt-1"
+                        ${question.answer_required ? "required" : null}>`;
+                        break;
+                }
+
+                container.innerHTML += `
+                    <div class="p-4 mb-4 bg-gray-200 rounded-lg shadow-lg">
+                        <form method="POST" action="">
+                        <div class="flex justify-between">
+                            <label for="question-${question.id}" class="block text-gray-700">${question.question}</label>
+                            <label for="question-${question.id}" class="block text-red-700">${question.answer_required ? "Answer requird" : ""}</label>
+                        </div>
+                        <div>
+                            ${inputField}
+                            <button id="submit-button"
+                            class="px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600">
+                            Submit
+                            </button>
+                        </div>
+                        </form>
+                    </div>
+                `;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchQuestions()
+
+            document.getElementById('submit-button').addEventListener('click', function () {
+                const formData = new FormData();
+                surveyData.questions.forEach(question => {
+                    const inputElement = document.getElementById(`question-${question.id}`);
+                    if (inputElement) {
+                        formData.append(`question-${question.id}`, inputElement.files.length ? inputElement.files[0] : inputElement.value);
+                    }
+                });
+
+                fetch('/api/submit-survey/', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Survey submitted successfully!');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('There was an error submitting the survey.');
+                    });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
