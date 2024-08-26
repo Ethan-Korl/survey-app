@@ -31,14 +31,14 @@ def create_question(request, survey_id):
     return render(request, "sa_questions.html")
 
 
-def survey_result(request):
+def survey_result(request, survey_id):
     if request.method == "POST":
         # JWTBackend()
         pass
     return render(request, "survey_result.html")
 
 
-def survey_detail(request):
+def survey_detail(request, survey_id):
     if request.method == "POST":
         # JWTBackend()
         pass

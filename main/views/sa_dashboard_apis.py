@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from main.models import Survey, Question
 from typing import Any
-from main.repository import SurveyRepository
-from main.serializers import CreateSurveySerializer, ListSurveySerializer
+from main.repository import SurveyRepository, QuestionRepository
+from main.serializers import (
+    CreateSurveySerializer,
+    ListSurveySerializer,
+    QuestionSerializer,
+)
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -12,6 +16,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 
 survey_repo = SurveyRepository
+ques_repo = QuestionRepository
 
 
 class ListSurveyView(ListAPIView):
@@ -33,6 +38,25 @@ class DeleteSurveyView(DestroyAPIView):
             return Response({"detail": "survey deleted"}, status=status.HTTP_200_OK)
 
         return Response({"detail": "survey not deleted"}, status=status.HTTP_200_OK)
+
+
+class CreateQuestionView(CreateAPIView):
+    serializer_class = QuestionSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                context = {"detail": "Question"}
+                return Response(data=context, status=status.HTTP_200_OK)
+
+        except ValidationError as ve:
+            context = {"detail": ve.default_detail}
+            print(context)
+            return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().post(request, *args, **kwargs)
 
 
 class CreateSurveyView(CreateAPIView):

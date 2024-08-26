@@ -3,6 +3,7 @@ from main.views import (
     create_survey,
     survey_detail,
     CreateSurveyView,
+    CreateQuestionView,
     ListSurveyView,
     DeleteSurveyView,
     survey_result,
@@ -19,6 +20,9 @@ sa_urlpatterns = [
     path("create-question/<survey_id>/", create_question, name="create-question"),
     path("api/create-survey/", CreateSurveyView.as_view(), name="create-survey-api"),
     path("api/get-surveys/", ListSurveyView.as_view(), name="list-survey-api"),
+    path(
+        "api/create-question/", CreateQuestionView.as_view(), name="create-question-api"
+    ),
     path(
         "api/delete-survey/<survey_id>/",
         DeleteSurveyView.as_view(),

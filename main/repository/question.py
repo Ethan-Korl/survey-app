@@ -7,6 +7,7 @@ class QuestionRepository:
     """
     Repository class for managing Question instances.
     """
+
     question_model = Question
 
     @classmethod
@@ -21,14 +22,19 @@ class QuestionRepository:
         return cls.question_model.objects.filter(survey=survey)
 
     @classmethod
-    def create(cls, survey: Survey, 
-               type_of_response_required: str, 
-               make_available: bool = False) -> Question:
-        
+    def create(
+        cls,
+        survey: Survey,
+        question: str,
+        type_of_response_required: str,
+        make_available: bool = False,
+    ) -> Question:
+
         question = cls.question_model.objects.create(
+            question=question,
             survey=survey,
             type_of_response_required=type_of_response_required,
-            make_available=make_available
+            make_available=make_available,
         )
         question.save()
         return question
