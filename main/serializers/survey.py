@@ -1,13 +1,10 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CharField, Serializer
 from main.models import Survey
 
-class CreateSurveySerializer(ModelSerializer):
-    class Meta:
-        model = Survey
-        fields = (
-            'title',
-            'description',
-        )
+
+class CreateSurveySerializer(Serializer):
+    title = CharField(max_length=50)
+    description = CharField(max_length=200) 
         
 
 class SurveySerializer(ModelSerializer):

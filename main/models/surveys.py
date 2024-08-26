@@ -1,9 +1,11 @@
 from django.urls import resolve, reverse
 from uuid import uuid4
 from django.db import models
+from accounts.models import SurveyAdmin
 
 class Survey(models.Model):
     url_id = models.UUIDField(default=uuid4, unique=True)
+    admin = models.ForeignKey(SurveyAdmin, on_delete=models.CASCADE, related_name="surveys")
     title = models.CharField(max_length=50, unique=True, verbose_name="name")
     description = models.CharField(max_length=100, null=True, blank=True)
     survey_link = models.URLField(null=True, blank=True)

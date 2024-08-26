@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:survey-app}/db.sqlite3",
+            "name": "survey app"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

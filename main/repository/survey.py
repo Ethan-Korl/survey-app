@@ -13,6 +13,13 @@ class SurveyRepository:
             return cls.survey_model.objects.get(pk=survey_id)
         except cls.survey_model.DoesNotExist:
             return None
+        
+    @classmethod
+    def get_by_title(cls, title: str) -> Optional[Survey]:
+        try:
+            return cls.survey_model.objects.get(title=title)
+        except cls.survey_model.DoesNotExist:
+            return None
 
 
     @classmethod
@@ -21,8 +28,9 @@ class SurveyRepository:
 
 
     @classmethod
-    def create(cls, title: str, description: str, close_survey: bool = False) -> Survey:
+    def create(cls, admin, title: str, description: str, close_survey: bool = False) -> Survey:
         survey = cls.survey_model.objects.create(
+            admin=admin,
             title=title, 
             description = description,
             close_survey=close_survey

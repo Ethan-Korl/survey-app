@@ -24,7 +24,7 @@ class SurveyAdminRepository:
 
     @classmethod
     def create(cls, username: str, password: str) -> SurveyAdmin:
-        admin = cls.sa.objects.create(username=username, password=password)
+        admin = cls.sa.objects.create(username=username, password=password, is_active=True)
         admin.save()
         return admin
     
