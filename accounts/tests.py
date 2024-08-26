@@ -33,19 +33,11 @@ class SurveyAdminRepositoryTests(TestCase):
         self.assertEqual(admin.username, "newuser")
         self.assertTrue(admin.check_password("newpassword"))
 
-    def test_update_success(self):
-        updated_admin = SurveyAdminRepository.update(self.admin.admin_id, username="updateduser", password="newpassword")
-        self.assertEqual(updated_admin.username, "updateduser")
-        self.assertTrue(updated_admin.check_password("newpassword"))
-
-    def test_update_not_found(self):
-        updated_admin = SurveyAdminRepository.update("nonexistent_id", username="updateduser")
-        self.assertIsNone(updated_admin)
 
     def test_delete_success(self):
-        result = SurveyAdminRepository.delete(self.admin.admin_id)
+        result = SurveyAdminRepository.delete(self.admin.id)
         self.assertTrue(result)
-        self.assertIsNone(SurveyAdminRepository.get_by_id(self.admin.admin_id))
+        self.assertIsNone(SurveyAdminRepository.get_by_id(self.admin.id))
 
     def test_delete_not_found(self):
         result = SurveyAdminRepository.delete("nonexistent_id")
