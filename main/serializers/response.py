@@ -5,6 +5,7 @@ from main.models import (
     ImageResponse,
     FileResponse,
     SelectionResponse,
+    NumberResponse,
 )
 
 
@@ -17,6 +18,12 @@ class OptionsSerializer(serializers.ModelSerializer):
 class TextResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextResponse
+        fields = "__all__"
+
+
+class NumberResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NumberResponse
         fields = "__all__"
 
 

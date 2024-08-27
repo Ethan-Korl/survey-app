@@ -7,6 +7,7 @@ ANSWER_TPYES = [
     ("Selection", "Selection"),
     ("File", "File"),
     ("Image", "Image"),
+    ("Number", "Number"),
 ]
 
 

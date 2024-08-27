@@ -22,6 +22,13 @@ class ImageResponse(models.Model):
     response = models.ImageField(upload_to="ImageResponses")
 
 
+class NumberResponse(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="number_responses"
+    )
+    response = models.IntegerField()
+
+
 class FileResponse(models.Model):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name="file_responses"
