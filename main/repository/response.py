@@ -2,7 +2,7 @@ from typing import Optional
 from main.models import SelectionResponse, Question, Options
 from main.models import ImageResponse
 from main.models import TextResponse
-from main.models import FileResponse
+from main.models import FileResponse, NumberResponse
 
 
 class OptionsRepository:
@@ -134,6 +134,25 @@ class FileResponseRepository:
         )
         response_instance.save()
         return response_instance
+
+
+class NumberResponseRepository:
+    """
+    Repository class for managing NumberResponse instances.
+    """
+
+    number_response_model = NumberResponse
+
+    @classmethod
+    def get_by_id(cls, response_id: int) -> Optional[NumberResponse]:
+        try:
+            return cls.number_response_model.objects.get(pk=response_id)
+        except cls.number_response_model.DoesNotExist:
+            return None
+
+    @classmethod
+    def get_by_question(cls, question: Question) -> list[NumberResponse]:
+        return cls.number_response_model.objects.filter(question=question)
 
 
 class SelectionResponseRepository:

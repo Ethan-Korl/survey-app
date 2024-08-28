@@ -1,7 +1,16 @@
 from django.shortcuts import render
 from main.models import Survey, Question
 from typing import Any
-from main.repository import SurveyRepository, QuestionRepository, OptionsRepository
+from main.repository import (
+    SurveyRepository,
+    QuestionRepository,
+    OptionsRepository,
+    ImageResponseRepository,
+    FileResponseRepository,
+    TextResponseRepository,
+    SelectionResponseRepository,
+    NumberResponseRepository,
+)
 from main.serializers import (
     CreateSurveySerializer,
     ListSurveySerializer,
@@ -17,6 +26,7 @@ from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
+
 
 survey_repo = SurveyRepository
 ques_repo = QuestionRepository
@@ -151,3 +161,55 @@ class CreateSurveyView(CreateAPIView):
             return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)
+
+
+class ListQuestionResponse(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    _img_repo = ImageResponseRepository
+    _sel_repo = SelectionResponseRepository
+    _txt_repo = TextResponseRepository
+    _file_repo = FileResponseRepository
+    _num_repo = NumberResponseRepository
+    data = []
+
+    def add_response(self, reponses):
+        for rep in reponses:
+            self.data.append(
+                {
+                    "response": rep.response,
+                    "created_at": f"{rep.created_at.date()} || {rep.created_at.time()}",
+                }
+            )
+
+    def get(self, request, question_id):
+        # clear previous state of the data attribute on every request
+        self.data.clear()
+        question = ques_repo.get_by_id(question_id)
+        if question.type_of_response_required == "Selection":
+            reponses = self._sel_repo.get_by_question(question)
+            for rep in reponses:
+                self.data.append(
+                    {
+                        "response": rep.response.option,
+                        "created_at": f"{rep.created_at.date()} || {rep.created_at.time()}",
+                    }
+                )
+
+        if question.type_of_response_required == "Text":
+            reponses = self._txt_repo.get_by_question(question)
+            self.add_response(reponses)
+
+        if question.type_of_response_required == "Image":
+            reponses = self._img_repo.get_by_question(question)
+            self.add_response(reponses)
+
+        if question.type_of_response_required == "File":
+            reponses = self._file_repo.get_by_question(question)
+            self.add_response(reponses)
+
+        if question.type_of_response_required == "Number":
+            reponses = self._num_repo.get_by_question(question)
+            self.add_response(reponses)
+
+        return Response(data=self.data, status=status.HTTP_200_OK)

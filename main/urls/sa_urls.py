@@ -7,6 +7,7 @@ from main.views import (
     ListQuestionView,
     ListOptionView,
     ListSurveyView,
+    ListQuestionResponse,
     DeleteSurveyView,
     survey_questions,
     create_question,
@@ -18,7 +19,7 @@ from django.urls import path
 
 sa_urlpatterns = [
     path("sa-dashboard/", sa_dashboard, name="sa-dashboard"),
-    path("survey-result/<survey_id>/", survey_questions, name="survey-result"),
+    path("survey-questions/<survey_id>/", survey_questions, name="survey-questions"),
     path("survey-detail/<survey_id>/", survey_detail, name="survey-detail"),
     path("create-question/<survey_id>/", create_question, name="create-question"),
     path("create-options/<question_id>/", create_options, name="create-option"),
@@ -31,6 +32,11 @@ sa_urlpatterns = [
         "api/get-questions/<survey_id>/",
         ListQuestionView.as_view(),
         name="list-question-api",
+    ),
+    path(
+        "api/get-question-response/<question_id>/",
+        ListQuestionResponse.as_view(),
+        name="question-result",
     ),
     path(
         "api/get-options/<question_id>/",

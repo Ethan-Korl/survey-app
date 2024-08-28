@@ -13,6 +13,7 @@ class TextResponse(models.Model):
         Question, on_delete=models.CASCADE, related_name="text_responses"
     )
     response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
 
 class ImageResponse(models.Model):
@@ -20,6 +21,7 @@ class ImageResponse(models.Model):
         Question, on_delete=models.CASCADE, related_name="image_responses"
     )
     response = models.ImageField(upload_to="ImageResponses")
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
 
 class NumberResponse(models.Model):
@@ -27,6 +29,7 @@ class NumberResponse(models.Model):
         Question, on_delete=models.CASCADE, related_name="number_responses"
     )
     response = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
 
 class FileResponse(models.Model):
@@ -34,6 +37,7 @@ class FileResponse(models.Model):
         Question, on_delete=models.CASCADE, related_name="file_responses"
     )
     response = models.FileField(upload_to="FileResponses")
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
 
 class SelectionResponse(models.Model):
@@ -41,3 +45,4 @@ class SelectionResponse(models.Model):
         Question, on_delete=models.CASCADE, related_name="selection_responses"
     )
     response = models.ForeignKey(Options, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)

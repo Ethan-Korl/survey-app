@@ -23,12 +23,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const url = window.location.href.split("/")
-            const survey_id = url[url.length - 2]
-            console.log(survey_id)
+            const question_id = url[url.length - 2]
+            console.log(question_id)
 
             function fetchQuestions() {
                 const access_token = localStorage.getItem("access_token");
-                fetch(`/sa/api/get-questions/${survey_id}/`, {
+                fetch(`/sa/api/get-question-response/${question_id}/`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${access_token}`,
@@ -36,10 +36,10 @@
                 })
                     .then(response => {
                         if (response.status === 404) {
-                            throw new Error(`No questions found for survey ${survey_id}`);
+                            throw new Error(`No results found for survey ${question_id}`);
                         }
                         if (response.status !== 200) {
-                            throw new Error(`Error fetching questions`);
+                            throw new Error(`Error fetching results`);
                         }
                         return response.json();
                     })
@@ -48,12 +48,11 @@
                         const questionsContainer = document.getElementById('questions-tbody');
                         questionsContainer.innerHTML = '';
 
-                        data.questions.reverse().forEach(question => {
+                        data.reverse().forEach(reponse => {
                             const questionDiv = document.createElement('tr');
                             questionDiv.innerHTML = `
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">${question.question}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">${question.created_at}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"><a class="text-blue-500 hover:underline" href="">View Reponses</a></td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">${reponse.response}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">${reponse.created_at}</td>
                             `;
                             questionsContainer.appendChild(questionDiv);
                         });
