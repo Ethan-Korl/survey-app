@@ -17,12 +17,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const url = window.location.href.split("/")
-            const survey_id = url[url.length - 2]
-            console.log(survey_id)
+            const question_id = url[url.length - 2]
+            console.log(question_id)
 
-            function fetchQuestions() {
+            function fetchOptions() {
                 const access_token = localStorage.getItem("access_token");
-                fetch(`/sa/api/get-questions/${survey_id}/`, {
+                fetch(`/sa/api/get-options/${question_id}/`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${access_token}`,
@@ -42,18 +42,13 @@
                         const questionsContainer = document.getElementById('questions-container');
                         questionsContainer.innerHTML = '';
 
-                        data.questions.reverse().forEach(question => {
+                        data.questions.reverse().forEach(option => {
                             const questionDiv = document.createElement('div');
                             questionDiv.className = 'bg-gray-200 p-4 rounded-lg shadow-lg';
                             questionDiv.innerHTML = `
                                 <div class="flex justify-between">
-                                    <h4 class="text-lg font-semibold">${question.question}</h4>
-                                        ${question.type_of_response_required == "Selection" ?
-                                    `<a class='px-1 py-1 text-white bg-red-500 rounded hover:bg-red-600' href=${'/sa/create-options/' + question.pk + "/"}>Add Options</a>` : ""}
+                                    <h4 class="text-lg font-semibold">${option.option}</h4>
                                 </div>
-                             
-                                <p class="mt-2 text-gray-600">Type: ${question.type_of_response_required}</p>
-                                <p class="mt-2 text-gray-600">Required: ${question.answer_required ? 'Yes' : 'No'}</p>
                                 <br>
                                
                             `;
@@ -66,14 +61,14 @@
             }
 
             // Function to handle adding a question
-            function handleAddQuestion(e) {
+            function handleAddOption(e) {
                 e.preventDefault();
                 const formData = new FormData(e.target)
-                formData.append("survey", survey_id)
+                formData.append("question", question_id)
 
                 const access_token = localStorage.getItem("access_token");
 
-                fetch(`/sa/api/create-question/`, {
+                fetch(`/sa/api/create-question-option/`, {
                     method: "POST",
                     headers: {
                         'Authorization': `Bearer ${access_token}`,
@@ -83,17 +78,17 @@
                     .then(response => response.json())
                     .then(data => {
                         alert(data.detail);
-                        fetchQuestions();
+                        fetchOptions();
                     })
                     .catch(error => {
                         alert('Error adding question: ' + error.message);
                     });
             }
 
-            document.getElementById('add-question-form').addEventListener('submit', handleAddQuestion);
+            document.getElementById('add-option-form').addEventListener('submit', handleAddOption);
 
 
-            fetchQuestions();
+            fetchOptions();
         });
     </script>
 </head>
@@ -105,41 +100,22 @@
 
     <main class="flex-1 p-4">
         <div id="main-div" class="p-6 mb-6 bg-white rounded-lg shadow-md">
-            <h2 class="mb-4 text-xl font-semibold">Manage Questions for Survey</h2>
+            <h2 class="mb-4 text-xl font-semibold">Manage Options for "{{question.question}}" </h2>
 
             <div id="questions-section">
-                <h3 class="mb-2 text-lg font-semibold">Add a New Question</h3>
-                <form id="add-question-form" class="mb-4">
+                <h3 class="mb-2 text-lg font-semibold">Add a New Option</h3>
+                <form method="POST" id="add-option-form" class="mb-4">
 
                     <div class="mb-4">
-                        <label for="question-text" class="block text-gray-700">Question Text</label>
-                        <input type="text" name="question" id="question-text"
+                        <label for="question-text" class="block text-gray-700">Option Text</label>
+                        <input type="text" name="option" id="option-text"
                             class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
-                            placeholder="Enter the question text">
+                            placeholder="Enter the option">
                     </div>
 
-                    <div class="mb-4">
-                        <label for="question-type" class="block text-gray-700">Answer Type</label>
-                        <select name="type_of_response_required" id="question-type"
-                            class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm">
-                            <option value="Text">Text</option>
-                            <option value="Selection">Multiple Response</option>
-                            <option value="Image">Image Response</option>
-                            <option value="Number">Number Response</option>
-                            <option value="File">File Response</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="is-required" class="flex items-center">
-                            <input name="answer_required" type="checkbox" id="is-required"
-                                class="w-5 h-5 text-blue-600 border-gray-300 rounded form-checkbox">
-                            <span class="ml-2 text-gray-700">Required</span>
-                        </label>
-                    </div>
 
                     <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">Add
-                        Question
+                        Option
                     </button>
                 </form>
                 <div id="questions-container" class="space-y-4">

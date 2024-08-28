@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from main.models import Survey, Question
 from typing import Any
-from main.repository import SurveyRepository, QuestionRepository
+from main.repository import SurveyRepository, QuestionRepository, OptionsRepository
 from main.serializers import (
     CreateSurveySerializer,
     ListSurveySerializer,
     QuestionSerializer,
     QuestionListSerializer,
+    OptionsSerializer,
 )
 from utils import check_if_required
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
@@ -19,6 +20,7 @@ from rest_framework import status
 
 survey_repo = SurveyRepository
 ques_repo = QuestionRepository
+option_repo = OptionsRepository
 
 
 class ListSurveyView(ListAPIView):
@@ -30,6 +32,38 @@ class ListSurveyView(ListAPIView):
         serializer = self.serializer_class(surveys, many=True)
         data = {}
         data["surveys"] = serializer.data
+        return Response(data=data, status=status.HTTP_200_OK)
+
+
+class CreateOptionsView(CreateAPIView):
+    serializer_class = OptionsSerializer
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                context = {"detail": "Option Added"}
+                return Response(data=context, status=status.HTTP_201_CREATED)
+
+        except ValidationError as ve:
+            context = {"detail": ve.default_detail}
+            print(ve)
+            return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().post(request, *args, **kwargs)
+
+
+class ListOptionView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OptionsSerializer
+
+    def get(self, request, question_id):
+        options = option_repo.get_by_question(question=question_id)
+        serializer = self.serializer_class(options, many=True)
+        data = {}
+        data["questions"] = serializer.data
         return Response(data=data, status=status.HTTP_200_OK)
 
 
@@ -80,8 +114,8 @@ class ListQuestionView(ListAPIView):
     serializer_class = QuestionListSerializer
 
     def get(self, request, survey_id):
-        surveys = ques_repo.get_by_survey(survey=survey_id)
-        serializer = self.serializer_class(surveys, many=True)
+        questions = ques_repo.get_by_survey(survey=survey_id)
+        serializer = self.serializer_class(questions, many=True)
         data = {}
         data["questions"] = serializer.data
         return Response(data=data, status=status.HTTP_200_OK)

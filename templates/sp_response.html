@@ -59,6 +59,8 @@
                     surveyData["questions"] = data.questions
                     console.log(data)
                     renderQuestions();
+
+
                 })
                 .catch(error => {
                     console.error(error);
@@ -72,48 +74,79 @@
 
             surveyData.questions.forEach(question => {
                 let inputField;
+                let actionUrl;
 
                 switch (question.type_of_response_required) {
                     case 'Text':
                         inputField = `<input type="text" id="question-${question.id}" 
-                        name="question-${question.id}" 
+                        name="response" 
                         class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
                         placeholder="${question.question}"
                         ${question.answer_required ? "required" : null}>`;
+
+
+                        actionUrl = "/sp/api/submit-text-response/"
+
                         break;
 
                     case 'Number':
                         inputField = `<input type="number" id="question-${question.id}" 
-                        name="question-${question.id}" 
+                        name="response" 
                         class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm" 
                         placeholder="${question.question}"  
                         ${question.answer_required ? "required" : null}>`;
+
+                        actionUrl = "/sp/api/submit-number-response/"
+
                         break;
 
                     case 'File':
-                        inputField = `<input type="file" id="question-${question.id}" 
-                        name="question-${question.id}" 
+                        inputField = `<input type="file" id="question-${question.pk}" 
+                        name="response" 
                         class="block mt-1" ${question.answer_required ? "required" : null}>`;
+
+
+                        actionUrl = "/sp/api/submit-file-response/"
+
                         break;
 
                     case 'Image':
-                        inputField = `<input type="file" id="question-${question.id}" 
-                        name="question-${question.id}" 
+                        inputField = `<input type="file" id="question-${question.pk}" 
+                        name="response" 
                         accept="image/*" class="block mt-1"
                         ${question.answer_required ? "required" : null}>`;
+
+                        actionUrl = "/sp/api/submit-image-response/"
+
+                        break;
+
+                    case 'Selection':
+                        inputField = `
+                        <select
+                        name="response"  
+                        class="block w-full p-2 mt-1 border border-blue-400 rounded-md shadow-sm" 
+                        ${question.answer_required ? "required" : null}>
+                             <option value="Text">Options</option>
+                          ${question.options.map(option =>
+                            `<option value="${option.pk}">${option.option}</option>`
+                        ).join('')}
+                        </select>`;
+
+                        actionUrl = "/sp/api/submit-selection-response/"
+
                         break;
                 }
 
                 container.innerHTML += `
                     <div class="p-4 mb-4 bg-gray-200 rounded-lg shadow-lg">
-                        <form method="POST" action="">
+                        <form id="response-form-${question.pk}" class="r-form" method="POST" action="${actionUrl}">
                         <div class="flex justify-between">
-                            <label for="question-${question.id}" class="block text-gray-700">${question.question}</label>
-                            <label for="question-${question.id}" class="block text-red-700">${question.answer_required ? "Answer requird" : ""}</label>
+                            <label for="question-${question.pk}" class="block text-gray-700">${question.question}</label>
+                            <label for="question-${question.pk}" class="block text-red-700">${question.answer_required ? "Answer requird" : ""}</label>
                         </div>
                         <div>
                             ${inputField}
-                            <button id="submit-button"
+                            <button id="submit-button-${question.pk}" 
                             class="px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600">
                             Submit
                             </button>
@@ -122,33 +155,72 @@
                     </div>
                 `;
             });
+
+            // document.querySelectorAll(".r-form").forEach((form) => {
+            //     console.log(form)
+            //     form.addEventListener('submit', e => e.preventDefault())
+
+            // })
+
+            surveyData.questions.forEach((question) => {
+                document.getElementById(`response-form-${question.pk}`).addEventListener("submit", (e) => {
+                    console.log(question.pk)
+                    e.preventDefault()
+
+                    let form = document.getElementById(`response-form-${question.pk}`)
+                    let button = document.getElementById(`submit-button-${question.pk}`)
+                    const formData = new FormData(form);
+
+                    formData.append("question", question.pk)
+
+                    const actionUrl = form.action;
+
+                    fetch(actionUrl, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                if (response.status === 409) {
+                                    return response.json().then(data => {
+                                        throw new Error(`${data.detail}`);
+                                    });
+                                } else if (response.status === 401) {
+                                    return response.json().then(data => {
+                                        throw new Error(`${data.detail}`);
+                                    });
+                                } else {
+                                    return response.json().then(data => {
+                                        throw new Error(`HTTP error ${response.status}`);
+                                    });
+                                }
+                            }
+                            return response.json()
+                        })
+                        .then(data => {
+                            console.log('Success:', data);
+
+                            button.disabled = true
+                            button.className = "px-4 py-2 mt-4 text-white bg-blue-200 rounded hover:bg-blue-300"
+                            alert('Response submitted successfully');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert(error.message);
+                        });
+
+                })
+            })
+
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             fetchQuestions()
 
-            document.getElementById('submit-button').addEventListener('click', function () {
-                const formData = new FormData();
-                surveyData.questions.forEach(question => {
-                    const inputElement = document.getElementById(`question-${question.id}`);
-                    if (inputElement) {
-                        formData.append(`question-${question.id}`, inputElement.files.length ? inputElement.files[0] : inputElement.value);
-                    }
-                });
 
-                fetch('/api/submit-survey/', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert('Survey submitted successfully!');
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('There was an error submitting the survey.');
-                    });
-            });
         });
     </script>
 
