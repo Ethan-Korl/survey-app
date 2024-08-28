@@ -24,7 +24,8 @@ def sa_dashboard(request: HttpRequest) -> HttpRequest:
 
 
 def survey_detail(request, survey_id):
-    return render(request, "survey_detail.html")
+    survey = survey_repo.get_by_id(survey_id)
+    return render(request, "survey_detail.html", {"survey": survey})
 
 
 def create_question(request, survey_id):

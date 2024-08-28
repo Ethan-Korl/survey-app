@@ -13,6 +13,15 @@ class CreateSurveySerializer(Serializer):
     description = CharField(max_length=200)
 
 
+class UpdateSurveySerializer(ModelSerializer):
+    class Meta:
+        model = Survey
+        fields = (
+            "title",
+            "description",
+        )
+
+
 class SurveySerializer(ModelSerializer):
     class Meta:
         model = Survey

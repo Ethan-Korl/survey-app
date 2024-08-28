@@ -45,15 +45,6 @@ class SurveyRepository:
         return survey
 
     @classmethod
-    def update(cls, survey_id: int, **kwargs) -> Optional[Survey]:
-        survey = cls.get_by_id(survey_id)
-        if survey:
-            for attr, value in kwargs.items():
-                setattr(survey, attr, value)
-            survey.save()
-        return survey
-
-    @classmethod
     def delete(cls, survey_id: int) -> bool:
         try:
             survey = cls.get_by_id(survey_id)

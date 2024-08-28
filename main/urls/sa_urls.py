@@ -9,6 +9,7 @@ from main.views import (
     ListSurveyView,
     ListQuestionResponse,
     DeleteSurveyView,
+    UpdateSurveyView,
     survey_questions,
     create_question,
     create_options,
@@ -28,6 +29,11 @@ sa_urlpatterns = [
     ),
     path("api/create-survey/", CreateSurveyView.as_view(), name="create-survey-api"),
     path("api/get-surveys/", ListSurveyView.as_view(), name="list-survey-api"),
+    path(
+        "api/survey-detail/<survey_id>/",
+        UpdateSurveyView.as_view(),
+        name="survey-detail-update",
+    ),
     path(
         "api/get-questions/<survey_id>/",
         ListQuestionView.as_view(),

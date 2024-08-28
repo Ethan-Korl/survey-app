@@ -26,31 +26,57 @@
 
     <div class="flex justify-center p-6">
         <main class="w-full max-w-4xl p-6 bg-white rounded-lg shadow-md">
-            <!-- Edit Survey Form -->
             <h2 class="mb-4 text-2xl font-semibold">Edit Survey</h2>
-            <form>
+            <form id="survey-form">
                 <div class="mb-4">
                     <label for="surveyTitle" class="block text-gray-700">Survey Title</label>
-                    <input type="text" id="surveyTitle"
+                    <input type="text" name="title" id="surveyTitle"
                         class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
-                        value="Customer Satisfaction Survey">
+                        value="{{survey.title}}">
                 </div>
                 <div class="mb-4">
                     <label for="surveyDescription" class="block text-gray-700">Description</label>
-                    <textarea id="surveyDescription" rows="4"
-                        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm">This survey is designed to gauge customer satisfaction with our services and products.</textarea>
+                    <textarea id="surveyDescription" name="description" rows="4"
+                        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm">{{ survey.description }}</textarea>
                 </div>
-                <div class="mb-4">
-                    <label for="surveyLink" class="block text-gray-700">Share Link</label>
-                    <input type="text" id="surveyLink"
-                        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
-                        value="https://example.com/survey-link" readonly>
-                </div>
+
                 <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">Save
                     Changes</button>
             </form>
         </main>
     </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let form = document.getElementById("survey-form")
+            const access_token = localStorage.getItem("access_token");
+            const url = window.location.href.split("/")
+            const survey_id = url[url.length - 2]
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault()
+
+                let formData = new FormData(e.target)
+
+                fetch(`/sa/api/survey-detail/${survey_id}/`, {
+                    method: "PATCH",
+                    body: formData,
+                    headers: {
+                        "Authorization": `Bearer ${access_token}`
+                    }
+                })
+                    .then((res) => res.json())
+
+                    .then((data) => {
+                        alert(data.detail)
+                        window.location.reload()
+                    }).catch((err) => {
+                        alert(err)
+                    })
+            })
+        })
+    </script>
 
 </body>
 

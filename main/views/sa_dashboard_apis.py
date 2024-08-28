@@ -17,9 +17,15 @@ from main.serializers import (
     QuestionSerializer,
     QuestionListSerializer,
     OptionsSerializer,
+    UpdateSurveySerializer,
 )
 from utils import check_if_required
-from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    DestroyAPIView,
+    UpdateAPIView,
+)
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -161,6 +167,27 @@ class CreateSurveyView(CreateAPIView):
             return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)
+
+
+class UpdateSurveyView(UpdateAPIView):
+    parser_classes = [MultiPartParser]
+    serializer_class = UpdateSurveySerializer
+    model_repo = SurveyRepository
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, survey_id):
+        survey = self.model_repo.get_by_id(survey_id)
+        serializer = self.serializer_class(survey, data=request.data, partial=True)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                self.perform_update(serializer)
+                return Response(
+                    data={"detail": "Survey  Updated"}, status=status.HTTP_200_OK
+                )
+        except ValidationError as ve:
+            context = {"detail": ve.default_detail}
+            print(context)
+            return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ListQuestionResponse(ListAPIView):
