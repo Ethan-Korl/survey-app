@@ -16,7 +16,13 @@ pip install requirements.txt
 # Running the docker image
 ```bash
 docker pull bhigethan/survey_app:latest
-docker run -p 8000:8000 -e POSTGRES_USER=<postgres_user> -e POSTGRES_PASSWORD=<posgres_user_password> bhigethan/survey_app:latest
+docker run -p 8000:8000 \
+-e POSTGRES_USER=<postgres_user> \
+-e POSTGRES_DBNAM=<postgres_dbname> \
+-e POSTGRES_USER_PASSWORD=<postgres_user_password> \
+-e HOST=<host> \
+-e PORT=<port> \
+bhigethan/survey_app:latest
 ```
 # 16 directories, 68 files
 # Projecct Structure
