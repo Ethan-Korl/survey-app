@@ -1,8 +1,4 @@
-from django.test import TestCase, Client
-from django.urls import reverse
-from main.models import Survey
-from accounts.models import SurveyAdmin
-from django.contrib.auth.hashers import make_password
+from main.test.base import *
 
 
 class SpDashboardViewTest(TestCase):

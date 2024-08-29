@@ -1,9 +1,4 @@
-from django.test import TestCase
-from django.test import TestCase
-from main.repository import SurveyRepository
-from main.models import Survey
-from accounts.models import SurveyAdmin
-from django.contrib.auth.hashers import make_password
+from main.test.base import *
 
 
 class SurveyRepositoryTests(TestCase):
