@@ -9,7 +9,7 @@ pip install requirements.txt
 ```bash
 ./manage.py test | python manage.py test
 ```
-# Running the program
+# Running the program locally
 ```bash
 ./manage.py runserver | python manage.py runserver
 ```
@@ -24,13 +24,17 @@ docker run -p 8000:8000 \
 -e PORT=<port> \
 bhigethan/survey_app:latest
 ```
+# Runnig in Production Environment
+```bash
+gunicorn SurveyApp.wsgi
+```
 # Swagger Documentation api 
 ```
 /api/schema/swagger-ui/
 ```
 # 16 directories, 68 files
 # Projecct Structure
-```
+```plaintext
 .
 ├── accounts
 │   ├── admin.py
