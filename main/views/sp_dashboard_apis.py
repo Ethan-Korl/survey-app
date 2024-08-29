@@ -58,13 +58,20 @@ class CreateTextResponseView(CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         try:
             if serializer.is_valid(raise_exception=True):
+                res = serializer.validated_data.get("response")
+                question_pk = serializer.validated_data.get("question").pk
+                question = que_repo.get_by_id(question_id=question_pk)
+                if len(res) > question.max_length:
+                    raise ValidationError(
+                        f"Response can not be more than {question.max_length} values"
+                    )
                 serializer.save()
                 context = {"detail": "Text Response Added"}
                 return Response(data=context, status=status.HTTP_201_CREATED)
 
         except ValidationError as ve:
-            context = {"detail": ve.default_detail}
-            print(ve)
+            context = {"detail": ve.args[0]}
+            print(ve.args[0])
             return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)
@@ -136,11 +143,16 @@ class CreateNumberResponseView(CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         try:
             if serializer.is_valid(raise_exception=True):
+                res = serializer.validated_data.get("response")
+                question_pk = serializer.validated_data.get("question").pk
+                question = que_repo.get_by_id(question_id=question_pk)
+                if int(res) > question.max_value or int(res) < question.min_value:
+                    raise ValidationError(
+                        f"Response not within ({question.min_value}, {question.max_value}) range"
+                    )
                 serializer.save()
                 return Response(
                     {"detail": "Number Response Added"}, status=status.HTTP_201_CREATED
                 )
         except ValidationError as ve:
-            return Response(
-                {"detail": ve.default_detail}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": ve.args[0]}, status=status.HTTP_400_BAD_REQUEST)

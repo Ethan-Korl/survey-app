@@ -7,6 +7,9 @@ class QuestionSerializer(ModelSerializer):
         model = Question
         fields = (
             "survey",
+            "max_length",
+            "min_value",
+            "max_value",
             "question",
             "type_of_response_required",
         )

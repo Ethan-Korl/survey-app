@@ -104,12 +104,19 @@ class CreateQuestionView(CreateAPIView):
                 type_of_response_required = serializer.validated_data.get(
                     "type_of_response_required"
                 )
+                max_length = serializer.validated_data.get("max_length", None)
+                min_value = serializer.validated_data.get("min_value", None)
+                max_value = serializer.validated_data.get("max_value", None)
+
                 question = serializer.validated_data.get("question")
                 answer_required = request.data.get("answer_required")
 
                 ques_repo.create(
                     survey=survey,
                     question=question,
+                    min_value=min_value,
+                    max_value=max_value,
+                    max_length=max_length,
                     type_of_response_required=type_of_response_required,
                     answer_required=check_if_required(answer_required),
                 )
