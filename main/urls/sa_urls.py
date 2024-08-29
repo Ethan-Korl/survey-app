@@ -23,7 +23,7 @@ sa_urlpatterns = [
     path("survey-questions/<survey_id>/", survey_questions, name="survey-questions"),
     path("survey-detail/<survey_id>/", survey_detail, name="survey-detail"),
     path("create-question/<survey_id>/", create_question, name="create-question"),
-    path("create-options/<question_id>/", create_options, name="create-option"),
+    path("create-options/<question_id>/", create_options, name="create-options"),
     path(
         "question-responses/<question_id>/", question_results, name="question-results"
     ),

@@ -30,7 +30,6 @@ class BaseSurveyAdminManager(BaseUserManager):
     @staticmethod
     def create_survey_admin(username, password, **extra_fields):
         _harshed_password = make_password(password)
-        print(_harshed_password)
         survey_admin = sa_repo.create(
             username=username,
             password=_harshed_password,
@@ -38,7 +37,7 @@ class BaseSurveyAdminManager(BaseUserManager):
         return survey_admin
 
 
-class SimpleJWTBackend(BaseBackend):
+class SimpleAuthBackend(BaseBackend):
     @staticmethod
     def authenticate(username=None, password=None, **kwargs):
         try:

@@ -1,7 +1,18 @@
 from django.test import TestCase
 from django.contrib.auth.hashers import make_password
+from auth_backend.tests import AuthBackendTestCase, TestTokenLogin, TestAuthentication
 from accounts.models import SurveyAdmin
 from accounts.repository import SurveyAdminRepository
+
+
+# Run auth backend test case here
+AuthBackendTestCase
+
+# test auth
+TestAuthentication
+
+# user token login
+TestTokenLogin
 
 
 class SurveyAdminRepositoryTests(TestCase):
