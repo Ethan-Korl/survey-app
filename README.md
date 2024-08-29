@@ -24,9 +24,13 @@ docker run -p 8000:8000 \
 -e PORT=<port> \
 bhigethan/survey_app:latest
 ```
+# Swagger Documentation api 
+```
+/api/schema/swagger-ui/
+```
 # 16 directories, 68 files
 # Projecct Structure
-```plaintext
+```
 .
 ├── accounts
 │   ├── admin.py

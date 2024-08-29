@@ -1,0 +1,726 @@
+openapi: 3.0.3
+info:
+  title: Survey App
+  version: 1.0.0
+  description: Simple Survey App
+paths:
+  /:
+    get:
+      operationId: root_retrieve
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyAdminLogin'
+          description: ''
+    post:
+      operationId: root_create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SurveyAdminLogin'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyAdminLogin'
+          description: ''
+  /sa/api/create-question/:
+    post:
+      operationId: sa_api_create_question_create
+      tags:
+      - sa
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+  /sa/api/create-question-option/:
+    post:
+      operationId: sa_api_create_question_option_create
+      tags:
+      - sa
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Options'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Options'
+          description: ''
+  /sa/api/create-survey/:
+    post:
+      operationId: sa_api_create_survey_create
+      tags:
+      - sa
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateSurvey'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSurvey'
+          description: ''
+  /sa/api/delete-survey/{survey_id}/:
+    delete:
+      operationId: sa_api_delete_survey_destroy
+      parameters:
+      - in: path
+        name: survey_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sa
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /sa/api/get-options/{question_id}/:
+    get:
+      operationId: sa_api_get_options_list
+      parameters:
+      - in: path
+        name: question_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sa
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Options'
+          description: ''
+  /sa/api/get-question-response/{question_id}/:
+    get:
+      operationId: sa_api_get_question_response_retrieve
+      parameters:
+      - in: path
+        name: question_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sa
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /sa/api/get-questions/{survey_id}/:
+    get:
+      operationId: sa_api_get_questions_list
+      parameters:
+      - in: path
+        name: survey_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sa
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionList'
+          description: ''
+  /sa/api/get-surveys/:
+    get:
+      operationId: sa_api_get_surveys_list
+      tags:
+      - sa
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListSurvey'
+          description: ''
+  /sa/api/survey-detail/{survey_id}/:
+    put:
+      operationId: sa_api_survey_detail_update
+      parameters:
+      - in: path
+        name: survey_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sa
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateSurvey'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSurvey'
+          description: ''
+    patch:
+      operationId: sa_api_survey_detail_partial_update
+      parameters:
+      - in: path
+        name: survey_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sa
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSurvey'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSurvey'
+          description: ''
+  /signup/:
+    get:
+      operationId: signup_retrieve
+      tags:
+      - signup
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyAdmin'
+          description: ''
+    post:
+      operationId: signup_create
+      tags:
+      - signup
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SurveyAdmin'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyAdmin'
+          description: ''
+  /sp/api/get-questions/{url_id}/:
+    get:
+      operationId: sp_api_get_questions_list
+      parameters:
+      - in: path
+        name: url_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sp
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionList'
+          description: ''
+    post:
+      operationId: sp_api_get_questions_create
+      parameters:
+      - in: path
+        name: url_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - sp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionList'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionList'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionList'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionList'
+          description: ''
+  /sp/api/submit-file-response/:
+    post:
+      operationId: sp_api_submit_file_response_create
+      tags:
+      - sp
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResponse'
+          description: ''
+  /sp/api/submit-image-response/:
+    post:
+      operationId: sp_api_submit_image_response_create
+      tags:
+      - sp
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImageResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+          description: ''
+  /sp/api/submit-number-response/:
+    post:
+      operationId: sp_api_submit_number_response_create
+      tags:
+      - sp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NumberResponse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NumberResponse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NumberResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NumberResponse'
+          description: ''
+  /sp/api/submit-selection-response/:
+    post:
+      operationId: sp_api_submit_selection_response_create
+      tags:
+      - sp
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SelectionResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectionResponse'
+          description: ''
+  /sp/api/submit-text-response/:
+    post:
+      operationId: sp_api_submit_text_response_create
+      tags:
+      - sp
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TextResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextResponse'
+          description: ''
+components:
+  schemas:
+    CreateSurvey:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 200
+      required:
+      - description
+      - title
+    FileResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        response:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        question:
+          type: integer
+      required:
+      - created_at
+      - id
+      - question
+      - response
+    ImageResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        response:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        question:
+          type: integer
+      required:
+      - created_at
+      - id
+      - question
+      - response
+    ListSurvey:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        url_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          title: Name
+          maxLength: 50
+        description:
+          type: string
+          nullable: true
+          maxLength: 100
+        survey_link:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+      required:
+      - pk
+      - title
+    NumberResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        response:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        question:
+          type: integer
+      required:
+      - created_at
+      - id
+      - question
+      - response
+    Options:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        option:
+          type: string
+          maxLength: 50
+        question:
+          type: integer
+      required:
+      - id
+      - option
+      - question
+    PatchedUpdateSurvey:
+      type: object
+      properties:
+        title:
+          type: string
+          title: Name
+          maxLength: 50
+        description:
+          type: string
+          nullable: true
+          maxLength: 100
+    Question:
+      type: object
+      properties:
+        survey:
+          type: integer
+        max_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        min_value:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        max_value:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        question:
+          type: string
+        type_of_response_required:
+          $ref: '#/components/schemas/TypeOfResponseRequiredEnum'
+      required:
+      - question
+      - survey
+      - type_of_response_required
+    QuestionList:
+      type: object
+      properties:
+        survey:
+          type: integer
+        question:
+          type: string
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        answer_required:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        type_of_response_required:
+          $ref: '#/components/schemas/TypeOfResponseRequiredEnum'
+      required:
+      - created_at
+      - pk
+      - question
+      - survey
+      - type_of_response_required
+    SelectionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        question:
+          type: integer
+        response:
+          type: integer
+      required:
+      - created_at
+      - id
+      - question
+      - response
+    SurveyAdmin:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        password:
+          type: string
+          maxLength: 100
+        confirm_password:
+          type: string
+          maxLength: 100
+      required:
+      - confirm_password
+      - password
+      - username
+    SurveyAdminLogin:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        password:
+          type: string
+          maxLength: 100
+      required:
+      - password
+      - username
+    TextResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        response:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        question:
+          type: integer
+      required:
+      - created_at
+      - id
+      - question
+      - response
+    TypeOfResponseRequiredEnum:
+      enum:
+      - Text
+      - Selection
+      - File
+      - Image
+      - Number
+      type: string
+      description: |-
+        * `Text` - Text
+        * `Selection` - Selection
+        * `File` - File
+        * `Image` - Image
+        * `Number` - Number
+    UpdateSurvey:
+      type: object
+      properties:
+        title:
+          type: string
+          title: Name
+          maxLength: 50
+        description:
+          type: string
+          nullable: true
+          maxLength: 100
+      required:
+      - title
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
