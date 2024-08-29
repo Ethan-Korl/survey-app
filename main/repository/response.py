@@ -154,6 +154,12 @@ class NumberResponseRepository:
     def get_by_question(cls, question: Question) -> list[NumberResponse]:
         return cls.number_response_model.objects.filter(question=question)
 
+    @classmethod
+    def create(cls, question: Question, response: int):
+        return cls.number_response_model.objects.create(
+            question=question, response=response
+        )
+
 
 class SelectionResponseRepository:
     """
