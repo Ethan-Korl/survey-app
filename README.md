@@ -2,7 +2,8 @@
 Survey app
 
 # Projecct Structure
-.
+
+```plaintext
 ├── accounts
 │   ├── admin.py
 │   ├── apps.py
@@ -84,6 +85,7 @@ Survey app
     ├── general.py
     ├── __init__.py
     └── question.py
+```
 
 15 directories, 67 files
 
