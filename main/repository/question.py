@@ -27,9 +27,9 @@ class QuestionRepository:
         survey: Survey,
         question: str,
         type_of_response_required: str,
-        max_length,
-        min_value,
-        max_value,
+        max_length=None,
+        min_value=None,
+        max_value=None,
         answer_required: bool = False,
     ) -> Question:
 
