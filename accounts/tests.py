@@ -1,5 +1,6 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.hashers import make_password
+from django.urls import reverse
 from auth_backend.tests import AuthBackendTestCase, TestTokenLogin, TestAuthentication
 from accounts.models import SurveyAdmin
 from accounts.repository import SurveyAdminRepository
@@ -52,3 +53,20 @@ class SurveyAdminRepositoryTests(TestCase):
     def test_delete_not_found(self):
         result = SurveyAdminRepository.delete("nonexistent_id")
         self.assertFalse(result)
+
+
+class AccountsViewTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+
+    def test_if_page_renders(self):
+        url = reverse("accounts:login")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "sa_login.html")
+
+    def test_if_page_renders(self):
+        url = reverse("accounts:signup")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "sa_register.html")
