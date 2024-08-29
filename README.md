@@ -1,8 +1,22 @@
 # survey-app
 Survey app
+# Testing
+```bash
+cd survey-app
+./manage.py test
+|
+python manage.py test
+```
+# Running the program
+```bash
+cd survey-app
 
+./manage.py runserver
+|
+python manage.py runserver
+```
+# 16 directories, 68 files
 # Projecct Structure
-
 ```plaintext
 .
 ├── accounts
@@ -90,22 +104,3 @@ Survey app
     └── question.py
 
 ```
-# 16 directories, 68 files
-
-# Testing
-```bash
-cd survey-app
-./manage.py test
-|
-python manage.py test
-```
-
-# Running the program
-```bash
-cd survey-app
-
-./manage.py runserver
-|
-python manage.py runserver
-```
-
