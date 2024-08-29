@@ -4,6 +4,7 @@ Survey app
 # Projecct Structure
 
 ```plaintext
+.
 ├── accounts
 │   ├── admin.py
 │   ├── apps.py
@@ -64,6 +65,8 @@ Survey app
 │       └── sp_dashboard_views.py
 ├── manage.py
 ├── README.md
+├── requirements.txt
+├── scripts
 ├── SurveyApp
 │   ├── asgi.py
 │   ├── __init__.py
@@ -85,15 +88,24 @@ Survey app
     ├── general.py
     ├── __init__.py
     └── question.py
+
 ```
-
-15 directories, 67 files
-
+# 16 directories, 68 files
 
 # Testing
-
 ```bash
+cd survey-app
 ./manage.py test
-
+|
 python manage.py test
 ```
+
+# Running the program
+```bash
+cd survey-app
+
+./manage.py runserver
+|
+python manage.py runserver
+```
+
