@@ -1,19 +1,22 @@
-# survey-app
-Survey app
-# Testing
+# Setup
 ```bash
 cd survey-app
-./manage.py test
-|
-python manage.py test
+pip install requirements.txt
+./manege.py makemigrations | python manage.py makemigrations
+./manage.py migrate | python manage.py migrate
+```
+# Testing
+```bash
+./manage.py test | python manage.py test
 ```
 # Running the program
 ```bash
-cd survey-app
-
-./manage.py runserver
-|
-python manage.py runserver
+./manage.py runserver | python manage.py runserver
+```
+# Running the docker image
+```bash
+docker pull bhigethan/survey_app:latest
+docker run -p 8000:8000 -e POSTGRES_USER=<postgres_user> -e POSTGRES_PASSWORD=<posgres_user_password> bhigethan/survey_app:latest
 ```
 # 16 directories, 68 files
 # Projecct Structure
