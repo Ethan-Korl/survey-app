@@ -16,10 +16,14 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const seleect_input = document.getElementById("question-type")
             const url = window.location.href.split("/")
             const survey_id = url[url.length - 2]
             console.log(survey_id)
 
+            seleect_input.onchange = ((e) => {
+                alert("SS")
+            })
             function fetchQuestions() {
                 const access_token = localStorage.getItem("access_token");
                 fetch(`/sa/api/get-questions/${survey_id}/`, {
@@ -129,6 +133,29 @@
                             <option value="File">File Response</option>
                         </select>
                     </div>
+
+
+                    <div class="mb-4">
+                        <label for="question-text" class="block text-gray-700">Max Length</label>
+                        <input type="text" name="question" id="question-text"
+                            class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
+                            placeholder="Enter reponse max length">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="question-text" class="block text-gray-700">Min value</label>
+                        <input type="text" name="question" id="question-text"
+                            class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
+                            placeholder="Enter min value">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="question-text" class="block text-gray-700">Max value</label>
+                        <input type="text" name="question" id="question-text"
+                            class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm"
+                            placeholder="Enter max value">
+                    </div>
+
 
                     <div class="mb-4">
                         <label for="is-required" class="flex items-center">
