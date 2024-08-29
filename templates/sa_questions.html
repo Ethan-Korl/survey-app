@@ -118,11 +118,11 @@
                     body: formData
                 })
                     .then(response => {
-                        loader.style.display = "inline"
+                        loader.style.display = "none"
                         return response.json()
                     })
                     .then(data => {
-                        loader.style.display = "inline"
+                        loader.style.display = "none"
                         alert(data.detail);
                         fetchQuestions();
                     })
