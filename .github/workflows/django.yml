@@ -1,10 +1,13 @@
 name: Django CI
 
 on:
+  workflow_dispatch
+  
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 env:
   POSTGRES_DBNAME: ${{ secrets.POSTGRES_DBNAME }}
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }} 
