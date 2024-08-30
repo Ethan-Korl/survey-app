@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-mu@ym@fza8&pw-ek-=82s15gufc2vm3#%c3rjggenf&(*_qo&6
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "https://survey-app-yjrt.onrender.com",
+    "survey-app-yjrt.onrender.com",
 ]
 
 # Application definition
