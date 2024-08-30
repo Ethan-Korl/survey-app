@@ -28,7 +28,9 @@ SECRET_KEY = "django-insecure-mu@ym@fza8&pw-ek-=82s15gufc2vm3#%c3rjggenf&(*_qo&6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "https://survey-app-yjrt.onrender.com",
+]
 
 # Application definition
 
