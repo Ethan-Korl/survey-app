@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-mu@ym@fza8&pw-ek-=82s15gufc2vm3#%c3rjggenf&(*_qo&6
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "survey-app-yjrt.onrender.com",
+    # "survey-app-yjrt.onrender.com",
 ]
 
 # Application definition
@@ -164,6 +164,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_ROOT = BASE_DIR / "media"
+
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

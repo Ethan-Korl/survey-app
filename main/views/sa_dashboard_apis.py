@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from django.shortcuts import render
 from main.models import Survey, Question
 from typing import Any
@@ -216,7 +217,7 @@ class ListQuestionResponse(ListAPIView):
                 }
             )
 
-    def get(self, request, question_id):
+    def get(self, request: HttpRequest, question_id):
         # clear previous state of the data attribute on every request
         self.data.clear()
         question = ques_repo.get_by_id(question_id)
@@ -236,11 +237,24 @@ class ListQuestionResponse(ListAPIView):
 
         if question.type_of_response_required == "Image":
             reponses = self._img_repo.get_by_question(question)
-            self.add_response(reponses)
+            print(reponses)
+            for rep in reponses:
+                self.data.append(
+                    {
+                        "response": f"https://{request.get_host()}{rep.response.url}",
+                        "created_at": f"{rep.created_at.date()} || {rep.created_at.time()}",
+                    }
+                )
 
         if question.type_of_response_required == "File":
             reponses = self._file_repo.get_by_question(question)
-            self.add_response(reponses)
+            for rep in reponses:
+                self.data.append(
+                    {
+                        "response": f"https://{request.get_host()}{rep.response.url}",
+                        "created_at": f"{rep.created_at.date()} || {rep.created_at.time()}",
+                    }
+                )
 
         if question.type_of_response_required == "Number":
             reponses = self._num_repo.get_by_question(question)

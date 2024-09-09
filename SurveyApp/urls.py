@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path("", include("accounts.urls")),
@@ -14,3 +16,5 @@ urlpatterns = [
     path("sa/", include("main.urls")),
     path("sp/", include("main.urls.sp_urls")),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
