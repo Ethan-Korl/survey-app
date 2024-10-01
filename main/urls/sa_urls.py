@@ -1,5 +1,6 @@
 from main.views import (
     sa_dashboard,
+    test,
     survey_detail,
     CreateSurveyView,
     CreateQuestionView,
@@ -19,6 +20,7 @@ from django.urls import path
 
 
 sa_urlpatterns = [
+    path("graph/", test),
     path("sa-dashboard/", sa_dashboard, name="sa-dashboard"),
     path("survey-questions/<survey_id>/", survey_questions, name="survey-questions"),
     path("survey-detail/<survey_id>/", survey_detail, name="survey-detail"),

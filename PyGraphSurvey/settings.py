@@ -29,9 +29,7 @@ SECRET_KEY = "django-insecure-mu@ym@fza8&pw-ek-=82s15gufc2vm3#%c3rjggenf&(*_qo&6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    # "survey-app-yjrt.onrender.com",
-]
+ALLOWED_HOSTS = ["survey-app-yjrt.onrender.com", "127.0.0.1", "localhost"]
 
 # Application definition
 
@@ -57,7 +55,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "SurveyApp.urls"
+ROOT_URLCONF = "PyGraphSurvey.urls"
 
 TEMPLATES = [
     {
@@ -75,12 +73,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "SurveyApp.wsgi.application"
+WSGI_APPLICATION = "PyGraphSurvey.wsgi.application"
 
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Survey App",
-    "DESCRIPTION": "Simple Survey App",
+    "TITLE": "PyGraphSurvey",
+    "DESCRIPTION": "PyGraphSurvey",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
@@ -89,14 +87,21 @@ SPECTACULAR_SETTINGS = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": config("POSTGRES_DBNAME"),
+#         "USER": config("POSTGRES_USER"),
+#         "PASSWORD": config("POSTGRES_USER_PASSWORD"),
+#         "HOST": config("DB_HOST"),
+#         "PORT": config("DB_PORT"),
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DBNAME"),
-        "USER": config("POSTGRES_USER"),
-        "PASSWORD": config("POSTGRES_USER_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "devDb.sqlite3",
     }
 }
 
